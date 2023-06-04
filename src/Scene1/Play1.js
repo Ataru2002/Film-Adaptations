@@ -1,4 +1,4 @@
-class play1 extends Phaser.Scene{
+class Play1 extends Phaser.Scene{
     constructor(){
         super("play1Scene");
     }
@@ -13,6 +13,8 @@ class play1 extends Phaser.Scene{
         this.load.image("character", './assets/character.png');
     }
     create(){
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
         let menuConfig = {
             fontFamily: 'Courier',
             fontSize: '13px',
@@ -95,7 +97,7 @@ class play1 extends Phaser.Scene{
         if(floorcnt == 5 && this.checkCollision(this.player, this.door3)){
             this.door3txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
-                this.doorknock.play();
+                this.scene.start("end1Scene")
             }
         }else if(floorcnt == 5){
             this.door3txt.setVisible(false);

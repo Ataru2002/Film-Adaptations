@@ -10,7 +10,7 @@ let config = {
             debug: false
         }
     },
-    scene: [Menu, Transition, Play1]
+    scene: [Menu, Transition, Play1, Intro1, End1]
 }
 
 let game = new Phaser.Game(config);
@@ -22,6 +22,5 @@ let currentX, currentY;
 let gamespeed = 2;
 let floorcnt = 0;
 
-let sceneManager = ["menuScene", "play1Scene"]; 
 let currentScene = 0
 let nextScene = 1
