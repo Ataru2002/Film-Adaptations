@@ -10,6 +10,8 @@ class End1 extends Phaser.Scene {
     }
 
     create() {
+        currentScene = "end1Scene"
+
         this.add.image(game.config.width/2, game.config.height/2, 'background1');
         let pat = this.add.image(400, -480, "pat");
         this.ground = this.physics.add.image(game.config.width/2, 450, 'platform').setScale(2);
@@ -61,6 +63,11 @@ class End1 extends Phaser.Scene {
 
         this.time.delayedCall(1700, () => {this.sound.play("shatter")}, null, this);
         this.time.delayedCall(3100, () => {this.player.setAngle(-90)}, null, this); //player character death
-        this.time.delayedCall(5000, () => {console.log("scene end")}, null, this)
+
+        //go to next scene
+        this.time.delayedCall(7000, () => {
+            nextScene = "intro2Scene";
+            this.scene.launch("transitionScene");
+        }, null, this)
     }
 }

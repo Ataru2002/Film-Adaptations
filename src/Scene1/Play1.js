@@ -111,7 +111,8 @@ class Play1 extends Phaser.Scene{
         if(floorcnt == 5 && this.checkCollision(this.player, this.door3)){
             this.door3txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
-                this.scene.start("end1Scene")
+                this.bgmusic.stop();
+                this.scene.start("end1Scene");
             }
         }else if(floorcnt == 5){
             this.door3txt.setVisible(false);
