@@ -11,7 +11,7 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start("end1Scene")
+        this.scene.start("play1Scene")
         this.add.image(game.config.width / 2, 0, "title_screen").setOrigin(0.5, 0)
 
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
