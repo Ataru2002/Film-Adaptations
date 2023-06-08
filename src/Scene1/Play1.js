@@ -41,6 +41,7 @@ class Play1 extends Phaser.Scene{
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //Door and entrance Sprites
+        this.floorLabel = this.add.text(game.config.width/2 + 300, game.config.height/2 - 50, "Floor " + (6 - floorcnt), menuConfig);
         this.door1 = this.add.sprite(game.config.width/2 + 150, game.config.height/2 + 10, 'door').setScale(0.5);
         this.door2 = this.add.sprite(game.config.width/2 - 50, game.config.height/2 + 10, 'door').setScale(0.5);
         this.door3 = this.add.sprite(game.config.width/2 - 200, game.config.height/2 + 10, 'door').setScale(0.5);
@@ -70,6 +71,9 @@ class Play1 extends Phaser.Scene{
         this.flag2 = true;
     }
     update(){
+        if(Math.floor(Math.random() * 1000) == 500){
+            this.scream.play();
+        }
         //update player's movement
         this.player.update();
         //Update doors based on the position
@@ -78,6 +82,8 @@ class Play1 extends Phaser.Scene{
                 this.player.movepos(game.config.width/2 - 250, game.config.height/2 + 20);
                 this.flag1 = false;
             }
+            this.floorLabel.text = "Floor " + (6 - floorcnt);
+            this.floorLabel.x = game.config.width/2 - 275; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 - 150; this.door1.y = game.config.height/2 + 10;
             this.door1txt.x = game.config.width/2 - 250; this.door1txt.y = game.config.height/2 - 50;
             this.door2.x = game.config.width/2 + 50; this.door2.y = game.config.height/2 + 10;
@@ -95,10 +101,12 @@ class Play1 extends Phaser.Scene{
                 this.entrancetxt.setVisible(false);
             }
         }else{
-            if(this.flag2){
+            if(this.flag1){
                 this.player.movepos(game.config.width/2 + 250, game.config.height/2 + 20);
-                this.flag2 = false;
+                this.flag1 = false;
             }
+            this.floorLabel.text = "Floor " + (6 - floorcnt);
+            this.floorLabel.x = game.config.width/2 + 225; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 + 150; this.door1.y = game.config.height/2 + 10;
             this.door1txt.x = game.config.width/2 + 50; this.door1txt.y = game.config.height/2 - 50;
             this.door2.x = game.config.width/2 - 50; this.door2.y = game.config.height/2 + 10;
@@ -108,22 +116,12 @@ class Play1 extends Phaser.Scene{
             this.door3.x = game.config.width/2 - 200; this.door3.y = game.config.height/2 + 10;
             this.door3txt.x = game.config.width/2 - 300; this.door3txt.y = game.config.height/2 - 50;
         }
-        if(floorcnt == 5 && this.checkCollision(this.player, this.door3)){
-            this.door3txt.setVisible(true);
-            if(Phaser.Input.Keyboard.JustDown(keyF)){
-                this.bgmusic.stop();
-                this.scene.start("end1Scene");
-            }
-        }else if(floorcnt == 5){
-            this.door3txt.setVisible(false);
-        }
-        if(this.checkCollision(this.player, this.entrance)){
+        if(floorcnt < 5 && this.checkCollision(this.player, this.entrance)){
             this.entrancetxt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 this.footsteps.play();
                 floorcnt++;
                 this.flag1 = true;
-                this.flag2 = true;
             }
         }else{
             this.entrancetxt.setVisible(false);
@@ -132,9 +130,6 @@ class Play1 extends Phaser.Scene{
             this.door1txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 this.doorknock.play();
-                if(Math.floor(Math.random() * 4) == 3){
-                    this.scream.play();
-                }
             }
         }else{
             this.door1txt.setVisible(false);
@@ -144,12 +139,18 @@ class Play1 extends Phaser.Scene{
             this.door2txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 this.doorknock.play();
-                if(Math.floor(Math.random() * 4) == 3){
-                    this.scream.play();
-                }
             }
         }else{
             this.door2txt.setVisible(false);
+        }
+        if(floorcnt == 5 && this.checkCollision(this.player, this.door3)){
+            this.door3txt.setVisible(true);
+            if(Phaser.Input.Keyboard.JustDown(keyF)){
+                this.bgmusic.stop();
+                this.scene.start("end1Scene")
+            }
+        }else if(floorcnt == 5){
+            this.door3txt.setVisible(false);
         }
     }
     checkCollision(object1, object2) {
