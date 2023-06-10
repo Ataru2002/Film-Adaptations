@@ -14,6 +14,7 @@ class Play1 extends Phaser.Scene{
         this.load.image("character", './assets/character.png');
     }
     create(){
+        //Fade in black
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         //Text Settings
         let menuConfig = {
@@ -56,14 +57,14 @@ class Play1 extends Phaser.Scene{
         this.entrancetxt.setVisible(false);
         this.door3.setActive(false);
         this.door3.setActive(false);
-
         this.entrancetxt = this.add.text(game.config.width/2 - 300, game.config.height/2 - 50, "Press F to go to the next floor", menuConfig);
         this.entrancetxt.setVisible(false);
 
+        //Implemented inputs
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-
+        //Player Sprite
         this.player = new Player(this, game.config.width/2 + 250, game.config.height/2 + 20, 'character', 0, this.cursors); 
         this.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.player, this.ground);
@@ -82,6 +83,7 @@ class Play1 extends Phaser.Scene{
                 this.player.movepos(game.config.width/2 - 250, game.config.height/2 + 20);
                 this.flag1 = false;
             }
+            //Move all the doors, entrance, texts, etc to the correct location based on the floor
             this.floorLabel.text = "Floor " + (6 - floorcnt);
             this.floorLabel.x = game.config.width/2 - 275; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 - 150; this.door1.y = game.config.height/2 + 10;
@@ -105,6 +107,7 @@ class Play1 extends Phaser.Scene{
                 this.player.movepos(game.config.width/2 + 250, game.config.height/2 + 20);
                 this.flag1 = false;
             }
+            //Move all the doors, entrance, texts, etc to the correct location based on the floor
             this.floorLabel.text = "Floor " + (6 - floorcnt);
             this.floorLabel.x = game.config.width/2 + 225; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 + 150; this.door1.y = game.config.height/2 + 10;
@@ -116,6 +119,7 @@ class Play1 extends Phaser.Scene{
             this.door3.x = game.config.width/2 - 200; this.door3.y = game.config.height/2 + 10;
             this.door3txt.x = game.config.width/2 - 300; this.door3txt.y = game.config.height/2 - 50;
         }
+        //Go to entrance to enter the next floor
         if(floorcnt < 5 && this.checkCollision(this.player, this.entrance)){
             this.entrancetxt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
@@ -126,6 +130,7 @@ class Play1 extends Phaser.Scene{
         }else{
             this.entrancetxt.setVisible(false);
         }
+        //Knocking on the door mechanism
         if(this.checkCollision(this.player, this.door1)){
             this.door1txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
@@ -134,7 +139,6 @@ class Play1 extends Phaser.Scene{
         }else{
             this.door1txt.setVisible(false);
         }
-
         if(this.checkCollision(this.player, this.door2)){
             this.door2txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
@@ -143,6 +147,7 @@ class Play1 extends Phaser.Scene{
         }else{
             this.door2txt.setVisible(false);
         }
+        //Player will go the next scene after going into the 5th floor and knock on a new door
         if(floorcnt == 5 && this.checkCollision(this.player, this.door3)){
             this.door3txt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
