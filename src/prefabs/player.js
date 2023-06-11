@@ -9,19 +9,27 @@ class Player extends Phaser.Physics.Arcade.Sprite{
     update(){
         if (this.cursors.left.isDown){
             this.setVelocity(-180, 180);
-            this.flipX = false;
+            this.flipX = true;
         }else if (this.cursors.right.isDown){
             this.setVelocity(180, 180);
-            this.flipX = true;
+            this.flipX = false;
         }else{
             this.setVelocity(0, 180);
+            this.stop();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
+            this.play("walk");
+        }
+        else if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
+            this.play("walk");
         }
     }
     update2(){
         if (this.cursors.left.isDown){
-            this.flipX = false;
-        }else if (this.cursors.right.isDown){
             this.flipX = true;
+        }else if (this.cursors.right.isDown){
+            this.flipX = false;
         }else{
             this.setVelocity(0, 180);
         }
