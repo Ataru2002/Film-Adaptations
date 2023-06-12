@@ -30,13 +30,13 @@ class Play3 extends Phaser.Scene{
         this.ground.body.allowGravity = false;
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        //Bed Sprite
+        //bed
         this.bed = this.physics.add.image(game.config.width/2 + 250, game.config.height/2 + 30, "bed").setScale(0.15)
         this.bed.setImmovable(true);
         this.bed.body.allowGravity = false;
         this.physics.add.collider(this.bed, this.ground);
         
-        //Character Sprite: Director, Sarah, and also the player
+        //character
         this.director = this.physics.add.sprite(game.config.width/2 + 250, game.config.height/2 - 30, 'character');
         this.directortext = this.add.text(game.config.width/2 + 100, game.config.height/2 - 70, "Press F to kill the director", menuConfig);
         this.directortext.setVisible(false);

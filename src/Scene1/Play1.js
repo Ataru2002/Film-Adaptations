@@ -103,6 +103,7 @@ class Play1 extends Phaser.Scene{
         //Update doors based on the position
         if(floorcnt % 2){
             if(this.flag1){
+                this.cameras.main.fadeIn(1000, 0, 0, 0);
                 this.player.movepos(game.config.width/2 - 250, game.config.height/2 + 20);
                 this.flag1 = false;
             }
@@ -131,6 +132,7 @@ class Play1 extends Phaser.Scene{
             }
         }else{
             if(this.flag1){
+                this.cameras.main.fadeIn(1000, 0, 0, 0);
                 this.player.movepos(game.config.width/2 + 250, game.config.height/2 + 20);
                 this.flag1 = false;
             }
@@ -154,9 +156,12 @@ class Play1 extends Phaser.Scene{
         if(floorcnt < 5 && this.checkCollision(this.player, this.entrance)){
             this.entrancetxt.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
-                this.footsteps.play();
-                floorcnt++;
-                this.flag1 = true;
+                this.cameras.main.fadeOut(1000, 0, 0, 0);
+                this.time.delayedCall(1000, () => {
+                    this.footsteps.play();
+                    floorcnt++;
+                    this.flag1 = true;
+                }, null, this)
             }
         }else{
             this.entrancetxt.setVisible(false);

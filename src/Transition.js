@@ -4,7 +4,6 @@ class Transition extends Phaser.Scene {
     }
 
     create() {
-        this.scene.moveBelow(this, currentScene);
         let curtains_left = this.add.image(0, 0, "curtains_left").setOrigin(1, 0);
         let curtains_right = this.add.image(game.config.width, 0, "curtains_right").setOrigin(0, 0);
 
