@@ -10,15 +10,15 @@ class End1 extends Phaser.Scene {
     }
 
     create() {
-        currentScene = "end1Scene"
+        currentScene = "end1Scene";
 
-        this.add.image(game.config.width/2, game.config.height/2, 'background1');
+        this.add.image(game.config.width/2, game.config.height/2 - 80, 'background1');
         let pat = this.add.image(400, -480, "pat");
         this.ground = this.physics.add.image(game.config.width/2, 450, 'platform').setScale(2);
         this.ground.setImmovable(true);
         this.ground.body.allowGravity = false;
-        this.player = this.physics.add.sprite(game.config.width/2 - 50, game.config.height/2 + 10, 'character');
-        this.player.flipX = true;
+        this.player = this.physics.add.sprite(game.config.width/2 - 50, game.config.height/2 + 10, 'friend').setOrigin(0, 1);
+        this.player.flipX = false;
         this.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.player, this.ground);
 
@@ -62,7 +62,10 @@ class End1 extends Phaser.Scene {
         });
 
         this.time.delayedCall(1700, () => {this.sound.play("shatter")}, null, this);
-        this.time.delayedCall(3100, () => {this.player.setAngle(-90)}, null, this); //player character death
+        this.time.delayedCall(3100, () => {
+            this.player.setAngle(-90);
+            this.player.setFrame("friend_dead");
+        }, null, this); //player character death
 
         //go to next scene
         this.time.delayedCall(7000, () => {

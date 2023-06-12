@@ -2,13 +2,16 @@ class Play3 extends Phaser.Scene{
     constructor(){
         super("play3Scene");
     }
+
     preload(){
         this.load.image("platform", './assets/platform.png');
         this.load.image("bed", './assets/Bed.png');
-        this.load.image("background3", './assets/background1.jpg');
-        this.load.image("character", './assets/character.png');
-        this.load.image("coffin", './assets/Coffin.png');
+        this.load.image("background3", './assets/background3.png');
+        this.load.atlas("suzy", "./assets/suzy.png", "./assets/suzy.json");
+        this.load.atlas("sara", "./assets/sara.png", "./assets/sara.json");
+        this.load.atlas("helena", "./assets/helena.png", "./assets/helena.json");
     }
+
     create(){
         //text settings
         let menuConfig = {
@@ -25,63 +28,84 @@ class Play3 extends Phaser.Scene{
         }
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         this.background = this.add.sprite(game.config.width/2, game.config.height/2, 'background3');
-        this.ground = this.physics.add.image(game.config.width/2, 450, 'platform').setScale(2);
+        this.ground = this.physics.add.image(game.config.width/2 - 32, 466, 'platform').setScale(2.2);
         this.ground.setImmovable(true);
         this.ground.body.allowGravity = false;
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //bed
-        this.bed = this.physics.add.image(game.config.width/2 + 250, game.config.height/2 + 30, "bed").setScale(0.15)
-        this.bed.setImmovable(true);
-        this.bed.body.allowGravity = false;
-        this.physics.add.collider(this.bed, this.ground);
+        this.bed = this.add.image(game.config.width/2 + 250, game.config.height/2 + 26, "bed").setScale(1.2);
         
-        //character
-        this.director = this.physics.add.sprite(game.config.width/2 + 250, game.config.height/2 - 30, 'character');
+        //sara animation
+        this.animsConfig = {
+            key: "walk3",
+            frames: this.anims.generateFrameNames("sara", {
+                prefix: "sara_",
+                start: 1,
+                end: 2
+            }),
+            frameRate: 2,
+            repeat: -1
+        }
+        this.friendAnim = this.anims.create(this.animsConfig);
+
+        //characters
+        this.director = this.add.sprite(game.config.width/2 + 250, game.config.height/2 - 5, 'helena');
         this.directortext = this.add.text(game.config.width/2 + 100, game.config.height/2 - 70, "Press F to kill the director", menuConfig);
         this.directortext.setVisible(false);
-        this.physics.add.collider(this.bed, this.director);
         this.director.setVisible(false);
-        this.player = new Player(this, game.config.width/2 + 150, game.config.height/2 + 10, 'character', 0, this.cursors);
+        this.player = new Player(this, game.config.width/2 + 200, game.config.height/2 + 10, 'suzy', 0, this.cursors).setOrigin(1, 1);
+        this.player.flipX = true;
         this.physics.add.collider(this.ground, this.player);
-        this.sarah = this.physics.add.sprite(game.config.width/2 - 280, game.config.height/2 + 10, 'character');
-        this.sarah.flipX = true;
+        this.sarah = this.physics.add.sprite(-32, game.config.height/2 + 10, 'sara');
+        this.sarah.play("walk3");
         this.sarah.setActive(false);
         this.sarah.setVisible(false);
         this.physics.add.collider(this.ground, this.sarah);
         this.physics.add.collider(this.player, this.sarah, () => {
             //Lose the game when sarah touches suzy
-            //the code right now will cause an error but it's use as a placeholder for the end of the game
-            this.scene.reset();
+            this.player.setFrame("suzy_dead");
+            this.player.setAngle(90);
+            this.sarah.setFrame("sara_stab");
+            this.sarah.setActive(false);
+            this.scene.pause();
         });
 
-        //coffin
-        this.coffin = this.add.sprite(game.config.width/2 - 280, game.config.height/2 - 30, 'coffin');
-
-        //the coffin disappears and sarah appears
+        //sarah walks in
         this.time.delayedCall(1700, () => {
             this.sarah.setActive(true);
             this.sarah.setVisible(true);
-            this.coffin.setActive(false);
-            this.coffin.setVisible(false);
         }, null, this);
+
+        this.win = false;
     }
+
     update(){
         this.player.update2(); //Suzy standing still
-        if(this.sarah.active) this.sarah.setVelocityX(90); //Sarah rushing to Suzy
+        if(this.sarah.active) this.sarah.setVelocityX(30); //Sarah rushing to Suzy
         if(this.sarah.active && !this.director.visible && Math.floor(Math.random() * 100) == 50){
             this.director.setVisible(true);
             this.time.delayedCall(1000, () => {
-                this.director.setVisible(false);
+                if (!this.win) {
+                    this.director.setVisible(false);
+                }
                 this.directortext.setVisible(false);
             })
         }
-        if(this.director.visible && this.player.flipX){
+        if(this.director.visible && !this.player.flipX){
             this.directortext.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 //Win the game if Suzy kills the director
-                //the code right now will cause an error but it's use as a placeholder for the end of the game
-                this.scene.reset();
+                this.win = true;
+                this.director.setVisible(true);
+                this.director.setFrame("helena_dead");
+                this.sarah.setActive(false);
+                this.sarah.setVelocityX(0);
+                let death_tween = this.add.tween({
+                    targets: this.sarah,
+                    alpha: {from: 1, to: 0},
+                    duration: 3000
+                })
             }
         }else{
             this.directortext.setVisible(false);
