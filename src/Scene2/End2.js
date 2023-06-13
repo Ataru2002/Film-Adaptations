@@ -4,7 +4,7 @@ class End2 extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("background2", './assets/background1.jpg');
+        this.load.image("background2", './assets/background1.png');
         this.load.image("director", "./assets/director.png");
         this.load.audio("snore", "./assets/Snoring.wav");
     }

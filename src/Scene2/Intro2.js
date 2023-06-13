@@ -4,7 +4,6 @@ class Intro2 extends Phaser.Scene {
     }
 
     create() {
-        currentScene = "intro2Scene";
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
         let textConfig = {
@@ -19,8 +18,10 @@ class Intro2 extends Phaser.Scene {
 
     update() {
         if(Phaser.Input.Keyboard.JustDown(keyF)){
-            nextScene = "intro3Scene"
-            this.scene.launch("transitionScene")
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start("play2Scene");
+            });
         }
     }
 }

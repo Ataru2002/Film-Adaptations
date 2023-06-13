@@ -6,14 +6,15 @@ class Play1 extends Phaser.Scene{
     preload(){
         this.load.audio("footsteps", './assets/footsteps.mp3');
         this.load.audio("knocking", './assets/knocking.mp3');
-        this.load.audio("scream", './assets/scream.wav');
-        this.load.audio("bgmusic", './assets/bgmusic.mp3')
+        this.load.audio("scream", './assets/girl_scream.mp3');
+        this.load.audio("bgmusic", './assets/bgmusic.mp3');
         this.load.image("background1", './assets/background1.png');
         this.load.image("platform", './assets/platform.png');
         this.load.image("door", './assets/door.png');
         this.load.image("entrance", './assets/entrance.png');
-        this.load.atlas("friend", './assets/friend.png', "./assets/friend.json");
+        this.load.image("arrow", "./assets/arrow.png");
         this.load.image("wall_light", "./assets/wall_light.png");
+        this.load.atlas("friend", './assets/friend.png', "./assets/friend.json");
     }
 
     create(){
@@ -45,13 +46,20 @@ class Play1 extends Phaser.Scene{
             },
             fixedWidth: 0
         }
+
+        let floorConfig = {
+            fontFamily: "DotGothic",
+            color: '#59e05e',
+            stroke: "##000000",
+            strokeThickness: 4
+        }
     
         //General settings: Audio, Keyboard inputs, Sprites
         this.doorknock = this.sound.add('knocking');
         this.footsteps = this.sound.add('footsteps');
         this.bgmusic = this.sound.add('bgmusic');
         this.bgmusic.play();
-        this.scream = this.sound.add('scream');
+        this.scream = this.sound.add('scream').setVolume(0.3);
         this.background = this.add.sprite(game.config.width/2, game.config.height/2 - 80, 'background1');
         this.ground = this.physics.add.image(game.config.width/2, 450, 'platform').setScale(2);
         this.ground.setImmovable(true);
@@ -59,12 +67,13 @@ class Play1 extends Phaser.Scene{
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //Door and entrance Sprites
-        this.floorLabel = this.add.text(game.config.width/2 + 300, game.config.height/2 - 50, "Floor " + (6 - floorcnt), menuConfig);
+        this.floorLabel = this.add.text(game.config.width/2, game.config.height/2 - 60, "Floor " + (6 - floorcnt), floorConfig).setOrigin(0.5, 0.5);
         this.door1 = this.add.sprite(game.config.width/2 + 150, game.config.height/2 + 10, 'door').setScale(0.5);
         this.door2 = this.add.sprite(game.config.width/2 - 50, game.config.height/2 + 10, 'door').setScale(0.5);
         this.door3 = this.add.sprite(game.config.width/2 - 200, game.config.height/2 + 10, 'door').setScale(0.5);
         this.entrance = this.add.sprite(game.config.width/2 - 200, game.config.height/2 + 10, 'entrance').setScale(0.5);
         this.entrancetxt = this.add.text(game.config.width/2 + 100, game.config.height/2 - 50, "Press F to go to the next floor", menuConfig);
+        this.arrow = this.add.image(this.entrance.x, this.entrance.y - 60, "arrow").setScale(0.8);
         this.door1txt = this.add.text(game.config.width/2 + 50, game.config.height/2 - 50, "Press F to knock the door", menuConfig);
         this.door2txt = this.add.text(game.config.width/2 - 150, game.config.height/2 - 50, "Press F to knock the door", menuConfig);
         this.door3txt = this.add.text(game.config.width/2 - 300, game.config.height/2 - 50, "Press F to knock the door", menuConfig);
@@ -106,13 +115,13 @@ class Play1 extends Phaser.Scene{
                 this.flag1 = false;
             }
             this.floorLabel.text = "Floor " + (6 - floorcnt);
-            this.floorLabel.x = game.config.width/2 - 275; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 - 150; this.door1.y = game.config.height/2 + 10;
             this.door1txt.x = game.config.width/2 - 250; this.door1txt.y = game.config.height/2 - 50;
             this.door2.x = game.config.width/2 + 50; this.door2.y = game.config.height/2 + 10;
             this.door2txt.x = game.config.width/2 - 50; this.door2txt.y = game.config.height/2 - 50;
             this.entrance.x = game.config.width/2 + 200; this.entrance.y = game.config.height/2 + 10;
             this.entrancetxt.x = game.config.width/2 + 80; this.entrancetxt.y = game.config.height/2 - 50;
+            this.arrow.x = this.entrance.x;
             this.door3.x = game.config.width/2 + 200; this.door3.y = game.config.height/2 + 10;
             this.door3txt.x = game.config.width/2 + 100; this.door3txt.y = game.config.height/2 - 50;
             this.wall_light1.x = this.door1.x - 50;
@@ -121,6 +130,7 @@ class Play1 extends Phaser.Scene{
             this.wall_light4.x = this.door2.x + 50;
             //This door will only appear if the player reached floor 5, hide the entrance away
             if(floorcnt == 5){
+                this,this.arrow.setVisible(false);
                 this.door3.setActive(true);
                 this.door3.setVisible(true);
                 this.entrance.setActive(false);
@@ -133,13 +143,13 @@ class Play1 extends Phaser.Scene{
                 this.flag1 = false;
             }
             this.floorLabel.text = "Floor " + (6 - floorcnt);
-            this.floorLabel.x = game.config.width/2 + 225; this.floorLabel.y = game.config.height/2 - 75;
             this.door1.x = game.config.width/2 + 150; this.door1.y = game.config.height/2 + 10;
             this.door1txt.x = game.config.width/2 + 50; this.door1txt.y = game.config.height/2 - 50;
             this.door2.x = game.config.width/2 - 50; this.door2.y = game.config.height/2 + 10;
             this.door2txt.x = game.config.width/2 - 150; this.door2txt.y = game.config.height/2 - 50;
             this.entrance.x = game.config.width/2 - 200; this.entrance.y = game.config.height/2 + 10;
             this.entrancetxt.x = game.config.width/2 - 300; this.entrancetxt.y = game.config.height/2 - 50;
+            this.arrow.x = this.entrance.x;
             this.door3.x = game.config.width/2 - 200; this.door3.y = game.config.height/2 + 10;
             this.door3txt.x = game.config.width/2 - 300; this.door3txt.y = game.config.height/2 - 50;
             this.wall_light1.x = this.door1.x - 50;

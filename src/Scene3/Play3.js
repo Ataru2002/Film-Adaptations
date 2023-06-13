@@ -7,12 +7,22 @@ class Play3 extends Phaser.Scene{
         this.load.image("platform", './assets/platform.png');
         this.load.image("bed", './assets/Bed.png');
         this.load.image("background3", './assets/background3.png');
+        this.load.image("lightning", "./assets/lightning_effect.png");
         this.load.atlas("suzy", "./assets/suzy.png", "./assets/suzy.json");
         this.load.atlas("sara", "./assets/sara.png", "./assets/sara.json");
         this.load.atlas("helena", "./assets/helena.png", "./assets/helena.json");
+        this.load.audio("storm", "./assets/storm.wav");
+        this.load.audio("director_scream", "./assets/monster_scream.wav");
+        this.load.audio("stab", "./assets/stab.mp3");
+        
     }
 
     create(){
+        this.storm = this.sound.add("storm");
+        this.storm.volume = 0.3;
+        this.storm.play();
+        this.storm.loop = true;
+
         //text settings
         let menuConfig = {
             fontFamily: 'Courier',
@@ -26,7 +36,14 @@ class Play3 extends Phaser.Scene{
             },
             fixedWidth: 0
         }
+        let gameOverConfig = {
+            fontFamily: "DotGothic",
+            fontSize: "24px",
+            align: "center"
+        }
+
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.background = this.add.sprite(game.config.width/2, game.config.height/2, 'background3');
         this.ground = this.physics.add.image(game.config.width/2 - 32, 466, 'platform').setScale(2.2);
         this.ground.setImmovable(true);
@@ -46,8 +63,12 @@ class Play3 extends Phaser.Scene{
             }),
             frameRate: 2,
             repeat: -1
-        }
+        };
         this.friendAnim = this.anims.create(this.animsConfig);
+
+        //win/lose states
+        this.win = false;
+        this.gameOver = false;
 
         //characters
         this.director = this.add.sprite(game.config.width/2 + 250, game.config.height/2 - 5, 'helena');
@@ -56,6 +77,7 @@ class Play3 extends Phaser.Scene{
         this.director.setVisible(false);
         this.player = new Player(this, game.config.width/2 + 200, game.config.height/2 + 10, 'suzy', 0, this.cursors).setOrigin(1, 1);
         this.player.flipX = true;
+        this.player.setFrame("suzy_armed");
         this.physics.add.collider(this.ground, this.player);
         this.sarah = this.physics.add.sprite(-32, game.config.height/2 + 10, 'sara');
         this.sarah.play("walk3");
@@ -64,11 +86,15 @@ class Play3 extends Phaser.Scene{
         this.physics.add.collider(this.ground, this.sarah);
         this.physics.add.collider(this.player, this.sarah, () => {
             //Lose the game when sarah touches suzy
-            this.player.setFrame("suzy_dead");
-            this.player.setAngle(90);
-            this.sarah.setFrame("sara_stab");
-            this.sarah.setActive(false);
-            this.scene.pause();
+            if(!this.gameOver) {
+                this.player.setFrame("suzy_dead");
+                this.player.setAngle(90);
+                this.sarah.setFrame("sara_stab");
+                this.sarah.setActive(false);
+                this.sound.play("stab");
+                this.add.text(game.config.width / 2, game.config.height / 4, " YOU DIED\nPress R to restart the scene", gameOverConfig).setOrigin(0.5, 0.5);
+                this.gameOver = true;
+            }
         });
 
         //sarah walks in
@@ -77,7 +103,9 @@ class Play3 extends Phaser.Scene{
             this.sarah.setVisible(true);
         }, null, this);
 
-        this.win = false;
+        //lightning flash effect
+        this.lightning = this.add.image(0, 0, "lightning").setAlpha(0.8).setScale(2);
+        this.lightning.setVisible(false);
     }
 
     update(){
@@ -85,6 +113,16 @@ class Play3 extends Phaser.Scene{
         if(this.sarah.active) this.sarah.setVelocityX(30); //Sarah rushing to Suzy
         if(this.sarah.active && !this.director.visible && Math.floor(Math.random() * 100) == 50){
             this.director.setVisible(true);
+            this.lightning.setVisible(true);
+            this.add.tween({
+                targets: this.lightning,
+                alpha: {from: 0.8, to: 0},
+                duration: 1000,
+                onComplete: () => {
+                    this.lightning.setAlpha(0.8);
+                    this.lightning.setVisible(false);
+                }
+            })
             this.time.delayedCall(1000, () => {
                 if (!this.win) {
                     this.director.setVisible(false);
@@ -99,6 +137,9 @@ class Play3 extends Phaser.Scene{
                 this.win = true;
                 this.director.setVisible(true);
                 this.director.setFrame("helena_dead");
+                this.player.setFrame("suzy_1");
+                this.sound.play("stab");
+                this.sound.play("director_scream");
                 this.sarah.setActive(false);
                 this.sarah.setVelocityX(0);
                 let death_tween = this.add.tween({
@@ -106,9 +147,20 @@ class Play3 extends Phaser.Scene{
                     alpha: {from: 1, to: 0},
                     duration: 3000
                 })
+
+                this.time.delayedCall(4000, () => {
+                    this.cameras.main.fadeOut(1000, 0, 0, 0);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                        this.scene.start("endScene");
+                    });
+                })
             }
         }else{
             this.directortext.setVisible(false);
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(keyR) && this.gameOver) {
+            this.scene.restart();
         }
     }
 }

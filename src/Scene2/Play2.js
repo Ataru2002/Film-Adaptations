@@ -3,12 +3,14 @@ class Play2 extends Phaser.Scene{
         super("play2Scene");
     }
     preload(){
-        this.load.image("background2", './assets/background1.jpg');
+        this.load.image("background2", './assets/background1.png');
         this.load.image("platform", './assets/platform.png');
         this.load.image("bed2", './assets/Bed2.png');
         this.load.image("character", './assets/character.png');
     }
     create(){
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
         //text settings
         let menuConfig = {
             fontFamily: 'Courier',

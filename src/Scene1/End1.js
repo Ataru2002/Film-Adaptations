@@ -22,6 +22,8 @@ class End1 extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.player, this.ground);
 
+        this.scream = this.sound.add('scream');
+        this.scream.play();
         //pat in the noose falls from the stained glass
         let death_tween = this.add.tween({
             targets: pat,
