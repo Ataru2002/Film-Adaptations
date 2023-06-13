@@ -14,7 +14,7 @@ class Intro3 extends Phaser.Scene {
         }
         this.add.text(game.config.width / 2, game.config.height / 2, "SCENE 3", textConfig).setOrigin(0.5, 0.5);
         textConfig.fontSize = "24px";
-        this.add.text(game.config.width / 2, game.config.height / 2 + 50, "Wait for the lightning to flash", textConfig).setOrigin(0.5, 0.5);
+        this.add.text(game.config.width / 2, game.config.height / 2 + 50, "Strike when the lightning flashes", textConfig).setOrigin(0.5, 0.5);
     }
 
     update() {

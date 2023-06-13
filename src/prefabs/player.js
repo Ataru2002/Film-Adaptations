@@ -1,10 +1,11 @@
 class Player extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame, cursors){
+    constructor(scene, x, y, texture, frame, cursors, animate){
         super(scene, x, y, texture, frame);
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.cursors = cursors;
         this.setVelocity(0, 180);
+        this.animate = animate
     }
 
     update(){
@@ -20,10 +21,16 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
-            this.play("walk");
+            if(this.animate == "walk")
+                this.play("walk");
+            if(this.animate == "walk2")
+                this.play("walk2");
         }
         else if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
-            this.play("walk");
+            if(this.animate == "walk")
+                this.play("walk");
+            if(this.animate == "walk2")
+                this.play("walk2");
         }
     }
 

@@ -8,7 +8,6 @@ class Play3 extends Phaser.Scene{
         this.load.image("bed", './assets/Bed.png');
         this.load.image("background3", './assets/background3.png');
         this.load.image("lightning", "./assets/lightning_effect.png");
-        this.load.atlas("suzy", "./assets/suzy.png", "./assets/suzy.json");
         this.load.atlas("sara", "./assets/sara.png", "./assets/sara.json");
         this.load.atlas("helena", "./assets/helena.png", "./assets/helena.json");
         this.load.audio("storm", "./assets/storm.wav");
@@ -23,19 +22,7 @@ class Play3 extends Phaser.Scene{
         this.storm.play();
         this.storm.loop = true;
 
-        //text settings
-        let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '13px',
-            backgroundColor: '#000000',
-            color: '#FFFF00',
-            align: 'right',
-            padding: {
-            top: 5,
-            bottom: 5,
-            },
-            fixedWidth: 0
-        }
+        //game over text
         let gameOverConfig = {
             fontFamily: "DotGothic",
             fontSize: "24px",
@@ -72,8 +59,6 @@ class Play3 extends Phaser.Scene{
 
         //characters
         this.director = this.add.sprite(game.config.width/2 + 250, game.config.height/2 - 5, 'helena');
-        this.directortext = this.add.text(game.config.width/2 + 100, game.config.height/2 - 70, "Press F to kill the director", menuConfig);
-        this.directortext.setVisible(false);
         this.director.setVisible(false);
         this.player = new Player(this, game.config.width/2 + 200, game.config.height/2 + 10, 'suzy', 0, this.cursors).setOrigin(1, 1);
         this.player.flipX = true;
@@ -110,7 +95,10 @@ class Play3 extends Phaser.Scene{
 
     update(){
         this.player.update2(); //Suzy standing still
-        if(this.sarah.active) this.sarah.setVelocityX(30); //Sarah rushing to Suzy
+
+        if(this.sarah.active) 
+            this.sarah.setVelocityX(30); //Sarah rushing to Suzy
+
         if(this.sarah.active && !this.director.visible && Math.floor(Math.random() * 100) == 50){
             this.director.setVisible(true);
             this.lightning.setVisible(true);
@@ -124,14 +112,11 @@ class Play3 extends Phaser.Scene{
                 }
             })
             this.time.delayedCall(1000, () => {
-                if (!this.win) {
-                    this.director.setVisible(false);
-                }
-                this.directortext.setVisible(false);
+                this.director.setVisible(false);
             })
         }
+
         if(this.director.visible && !this.player.flipX){
-            this.directortext.setVisible(true);
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 //Win the game if Suzy kills the director
                 this.win = true;
@@ -155,8 +140,6 @@ class Play3 extends Phaser.Scene{
                     });
                 })
             }
-        }else{
-            this.directortext.setVisible(false);
         }
 
         if(Phaser.Input.Keyboard.JustDown(keyR) && this.gameOver) {
