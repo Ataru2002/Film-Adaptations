@@ -119,6 +119,7 @@ class Play3 extends Phaser.Scene{
         if(this.director.visible && !this.player.flipX){
             if(Phaser.Input.Keyboard.JustDown(keyF)){
                 //Win the game if Suzy kills the director
+                this.storm.stop();
                 this.win = true;
                 this.director.setVisible(true);
                 this.director.setFrame("helena_dead");
