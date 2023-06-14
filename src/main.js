@@ -1,3 +1,15 @@
+/*
+*   Components used in this project
+*       + Physics System: Player's physics
+*       + Camera: Camera fading in and out
+*       + Text Objects: Text appears whenever a player do a certain interaction
+*       + Timer: Delaying events
+*       + Particle effects: Glass shattering effects
+*   Team Members: Nhan Nguyen and Lily Demos
+*/
+
+
+
 let config = {
     type: Phaser.AUTO,
     width: 640,
@@ -10,12 +22,12 @@ let config = {
             debug: false
         }
     },
-    scene: [Menu, Transition, Play1, Play3, Intro1, End1, Intro2, Play2, End2, Intro3, End]
+    scene: [Menu, Transition, Credits, Play1, Play3, Intro1, End1, Intro2, Play2, End2, Intro3, End]
 }
 
 let game = new Phaser.Game(config);
 
-let keyF, keyR, keyN, keyLEFT, keyRIGHT;
+let keyF, keyR, keyC, keyLEFT, keyRIGHT;
 let currentX, currentY;
 let gamespeed = 2;
 let floorcnt = 0;
